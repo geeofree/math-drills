@@ -1,6 +1,5 @@
 import {
   Button,
-  Card,
   Center,
   Heading,
   VStack,
@@ -18,35 +17,32 @@ const OPERATIONS = [
   { icon: Divide, operation: "division" },
 ];
 
+const viewport = Dimensions.get("window");
+
 export default function Home() {
   return (
-    <Center minHeight={Dimensions.get("window").height}>
-      <Card width={Dimensions.get("window").width - 32}>
-        <VStack space="md">
-          <Heading textAlign="center">Math Drills</Heading>
-          <Box flexDirection="row" flexWrap="wrap">
-            {OPERATIONS.map((operation, index) => (
-              <Box
-                flexDirection="row"
-                key={operation.operation}
-                width="50%"
-                justifyContent={index % 2 ? "flex-start" : "flex-end"}
-                padding="$2"
-              >
-                <Link
-                  href={`/drills/${operation.operation}`}
-                  key={operation.operation}
-                  asChild
-                >
-                  <Button>
-                    <ButtonIcon as={operation.icon} />
-                  </Button>
-                </Link>
-              </Box>
-            ))}
-          </Box>
-        </VStack>
-      </Card>
+    <Center minHeight={viewport.height}>
+      <VStack space="md">
+        <Heading textAlign="center">Math Drills</Heading>
+        <Box flexDirection="row" flexWrap="wrap" justifyContent="center">
+          {OPERATIONS.map((operation, index) => (
+            <Box
+              width={viewport.width / 2}
+              height={viewport.width / 2}
+              padding="$2"
+              paddingLeft={index % 2 ? "$2" : "$4"}
+              paddingRight={index % 2 ? "$4" : "$2"}
+              key={operation.operation}
+            >
+              <Link href={`/drills/${operation.operation}`} asChild>
+                <Button width="$full" height="$full">
+                  <ButtonIcon as={operation.icon} width="$full" />
+                </Button>
+              </Link>
+            </Box>
+          ))}
+        </Box>
+      </VStack>
     </Center>
   );
 }
