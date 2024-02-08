@@ -4,7 +4,6 @@ import {
   ButtonText,
   Card,
   Center,
-  HStack,
   Heading,
   Input,
   InputField,
@@ -14,9 +13,10 @@ import {
 import { Link, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 import { Dimensions } from "react-native";
+import { Operators } from "./types";
 
 export default function Operation() {
-  const { operation } = useLocalSearchParams<{ operation: string }>();
+  const { operation } = useLocalSearchParams<{ operation: Operators }>();
 
   const [operands, setOperands] = useState<{
     leftOperand: number;
@@ -41,6 +41,7 @@ export default function Operation() {
                 <InputField
                   value={operands.leftOperand ? operands.leftOperand + "" : ""}
                   keyboardType="numeric"
+                  selectTextOnFocus={true}
                   onChangeText={(text) =>
                     setOperands((operands) => ({
                       ...operands,
