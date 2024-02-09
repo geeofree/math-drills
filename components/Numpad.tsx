@@ -1,6 +1,6 @@
 import { Box, Button, ButtonIcon, ButtonText } from "@gluestack-ui/themed";
 import { Delete } from "lucide-react-native";
-import { ReactNode, useRef, ComponentProps } from "react";
+import { ReactNode, useRef, ComponentProps, useMemo, useEffect } from "react";
 
 export type Numpad = {
   value?: string;
@@ -61,42 +61,51 @@ export function Numpad(props: Numpad) {
   const { value, onChange } = props;
   const text = useRef("");
 
-  return (
-    <Box gap="$2">
-      {KEYS.map((keyRow, keyRowIndex) => (
-        <Box flexDirection="row" flexWrap="wrap" key={keyRowIndex} gap="$2">
-          {keyRow.map((key, keyIndex) => (
-            <Button
-              key={`${keyRowIndex}${keyIndex}`}
-              flex={1}
-              variant="outline"
-              size="xl"
-              action={key === null ? undefined : KeyActionMap[key] ?? "primary"}
-              opacity={key === null ? "$0" : "$100"}
-              onPress={() => {
-                if (typeof onChange === "function") {
-                  if (key === null) {
-                    return;
-                  }
+  if (typeof value === "string") {
+    text.current = value;
+  }
 
-                  text.current = getNextValue(
-                    key,
-                    typeof value === "string" ? value : text.current
-                  );
+  function handleChange(key: string | number | null) {
+    if (key === null) {
+      return;
+    }
 
-                  onChange(text.current);
+    if (typeof onChange === "function") {
+      text.current = getNextValue(key, text.current);
+      onChange(text.current);
+    }
+  }
+
+  const content = useMemo(
+    () => (
+      <Box gap="$2">
+        {KEYS.map((keyRow, keyRowIndex) => (
+          <Box flexDirection="row" flexWrap="wrap" key={keyRowIndex} gap="$2">
+            {keyRow.map((key, keyIndex) => (
+              <Button
+                key={`${keyRowIndex}${keyIndex}`}
+                flex={1}
+                variant="outline"
+                size="xl"
+                action={
+                  key === null ? undefined : KeyActionMap[key] ?? "primary"
                 }
-              }}
-            >
-              {key === null
-                ? key
-                : KeyContentMap[key] ?? (
-                    <ButtonText size="xl">{key}</ButtonText>
-                  )}
-            </Button>
-          ))}
-        </Box>
-      ))}
-    </Box>
+                opacity={key === null ? "$0" : "$100"}
+                onPress={() => handleChange(key)}
+              >
+                {key === null
+                  ? key
+                  : KeyContentMap[key] ?? (
+                      <ButtonText size="xl">{key}</ButtonText>
+                    )}
+              </Button>
+            ))}
+          </Box>
+        ))}
+      </Box>
+    ),
+    []
   );
+
+  return content;
 }

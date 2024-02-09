@@ -115,6 +115,7 @@ export default function Operands() {
             <Divider />
             <Numpad value={answer} onChange={setAnswer} />
             <Button
+              size="xl"
               onPress={() => {
                 if (Number(answer) === correctAnswer) {
                   setTotalCorrectAnswers(
