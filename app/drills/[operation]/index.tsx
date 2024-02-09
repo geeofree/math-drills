@@ -2,7 +2,6 @@ import {
   Box,
   Button,
   ButtonText,
-  Card,
   Center,
   Heading,
   Input,
@@ -25,60 +24,54 @@ export default function Operation() {
 
   return (
     <Center minHeight={Dimensions.get("window").height}>
-      <VStack space="md">
-        <Card width={Dimensions.get("window").width - 32}>
-          <VStack space="md">
-            <Heading>Drills: {operation}</Heading>
-            <Text>Enter no. of operands:</Text>
+      <VStack space="md" width="$full" padding="$4">
+        <Heading>Drills: {operation}</Heading>
+        <Text>Enter no. of operands:</Text>
 
-            <Box
-              flexDirection="row"
-              justifyContent="space-evenly"
-              alignItems="center"
-              gap="$4"
-            >
-              <Input variant="outline" size="md" flexGrow={1}>
-                <InputField
-                  value={operands.leftOperand ? operands.leftOperand + "" : ""}
-                  keyboardType="numeric"
-                  selectTextOnFocus={true}
-                  onChangeText={(text) =>
-                    setOperands((operands) => ({
-                      ...operands,
-                      leftOperand: text ? Number(text) : 0,
-                    }))
-                  }
-                />
-              </Input>
+        <Box
+          flexDirection="row"
+          justifyContent="space-evenly"
+          alignItems="center"
+          gap="$2"
+        >
+          <Input variant="rounded" size="md" flexGrow={1}>
+            <InputField
+              value={operands.leftOperand ? operands.leftOperand + "" : ""}
+              keyboardType="numeric"
+              selectTextOnFocus={true}
+              onChangeText={(text) =>
+                setOperands((operands) => ({
+                  ...operands,
+                  leftOperand: text ? Number(text) : 0,
+                }))
+              }
+            />
+          </Input>
 
-              <Text>by</Text>
+          <Text>by</Text>
 
-              <Input variant="outline" size="md" flexGrow={1}>
-                <InputField
-                  value={
-                    operands.rightOperand ? operands.rightOperand + "" : ""
-                  }
-                  keyboardType="numeric"
-                  onChangeText={(text) =>
-                    setOperands((operands) => ({
-                      ...operands,
-                      rightOperand: text ? Number(text) : 0,
-                    }))
-                  }
-                />
-              </Input>
-            </Box>
+          <Input variant="rounded" size="md" flexGrow={1}>
+            <InputField
+              value={operands.rightOperand ? operands.rightOperand + "" : ""}
+              keyboardType="numeric"
+              onChangeText={(text) =>
+                setOperands((operands) => ({
+                  ...operands,
+                  rightOperand: text ? Number(text) : 0,
+                }))
+              }
+            />
+          </Input>
+        </Box>
 
-            <Link
-              href={`/drills/${operation}/${operands.leftOperand}x${operands.rightOperand}`}
-              asChild
-            >
-              <Button>
-                <ButtonText>Start</ButtonText>
-              </Button>
-            </Link>
-          </VStack>
-        </Card>
+        <Link
+          href={`/drills/${operation}/${operands.leftOperand}x${operands.rightOperand}`}
+          asChild
+        >
+          <Button>
+            <ButtonText>Start</ButtonText>
+          </Button>
+        </Link>
 
         <Link href="/" asChild>
           <Button variant="link">

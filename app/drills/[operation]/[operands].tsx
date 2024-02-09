@@ -4,16 +4,16 @@ import {
   ButtonText,
   Card,
   Center,
-  Input,
-  InputField,
   Text,
   VStack,
   Heading,
+  Divider,
 } from "@gluestack-ui/themed";
 import { Link, useLocalSearchParams } from "expo-router";
 import { Dimensions } from "react-native";
 import { Operators } from "./types";
 import { useMemo, useState } from "react";
+import { Numpad } from "@/components";
 
 const clamp = (min: number, max: number) =>
   Math.max(min, Math.floor(Math.random() * max));
@@ -52,7 +52,7 @@ export default function Operands() {
     .map((n) => (Number(n) < 0 ? 1 : Number(n)));
 
   const [attempt, setAttempt] = useState(1);
-  const [answer, setAnswer] = useState(0);
+  const [answer, setAnswer] = useState("");
   const [totalCorrectAnswers, setTotalCorrectAnswers] = useState(0);
 
   const [leftOperand, rightOperand] = useMemo(
@@ -84,59 +84,51 @@ export default function Operands() {
 
   return (
     <Center minHeight={Dimensions.get("window").height}>
-      <VStack space="md">
-        <Card width={Dimensions.get("window").width - 32}>
-          {attempt > MAX_ATTEMPTS ? (
-            <VStack space="md">
-              <Heading>Done!</Heading>
-              <Text>
-                Score: {totalCorrectAnswers} / {MAX_ATTEMPTS}
+      <VStack space="md" width="$full" padding="$4">
+        {attempt > MAX_ATTEMPTS ? (
+          <>
+            <Heading>Done!</Heading>
+            <Text>
+              Score: {totalCorrectAnswers} / {MAX_ATTEMPTS}
+            </Text>
+          </>
+        ) : (
+          <>
+            <Heading>Question #{attempt}</Heading>
+            <Box flexDirection="row" justifyContent="flex-end" gap="$4">
+              <Text alignSelf="flex-end" fontSize="$6xl" lineHeight="$6xl">
+                {operator}
               </Text>
-            </VStack>
-          ) : (
-            <VStack space="md">
-              <Heading>Question #{attempt}</Heading>
-              <Box flexDirection="row" justifyContent="flex-end">
-                <Text alignSelf="flex-end" fontSize="$6xl" lineHeight="$6xl">
-                  {operator}
+              <Box>
+                <Text fontSize="$6xl" lineHeight="$6xl" textAlign="right">
+                  {leftOperand}
                 </Text>
-                <Box>
-                  <Text fontSize="$6xl" lineHeight="$6xl" textAlign="right">
-                    {leftOperand}
-                  </Text>
-                  <Text fontSize="$6xl" lineHeight="$6xl" textAlign="right">
-                    {rightOperand}
-                  </Text>
-                </Box>
+                <Text fontSize="$6xl" lineHeight="$6xl" textAlign="right">
+                  {rightOperand}
+                </Text>
               </Box>
-              <Input variant="outline" size="xl" flexGrow={1}>
-                <InputField
-                  keyboardType="numeric"
-                  textAlign="right"
-                  placeholder="Enter Answer"
-                  selectTextOnFocus={true}
-                  onChangeText={(text) => {
-                    if (text) {
-                      setAnswer(Number(text));
-                    }
-                  }}
-                />
-              </Input>
-              <Button
-                onPress={() => {
-                  if (answer === correctAnswer) {
-                    setTotalCorrectAnswers(
-                      (totalCorrectAnswers) => totalCorrectAnswers + 1
-                    );
-                  }
-                  setAttempt((attempt) => attempt + 1);
-                }}
-              >
-                <ButtonText>Submit</ButtonText>
-              </Button>
-            </VStack>
-          )}
-        </Card>
+            </Box>
+            <Divider />
+            <Text fontSize="$6xl" lineHeight="$6xl" textAlign="right">
+              {answer || 0}
+            </Text>
+            <Divider />
+            <Numpad value={answer} onChange={setAnswer} />
+            <Button
+              onPress={() => {
+                if (Number(answer) === correctAnswer) {
+                  setTotalCorrectAnswers(
+                    (totalCorrectAnswers) => totalCorrectAnswers + 1
+                  );
+                }
+                setAnswer("");
+                setAttempt((attempt) => attempt + 1);
+              }}
+            >
+              <ButtonText>Submit</ButtonText>
+            </Button>
+          </>
+        )}
         <Link href="/" asChild>
           <Button variant="link">
             <ButtonText>Go Home</ButtonText>
